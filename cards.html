@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cards</title>
+  <link rel="stylesheet" href="tan.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Your Cards</h1>
+    <div id="cardContainer" class="card-container"></div>
+  </div>
+
+  <script>
+    // Retrieve user data (array of numbers) from localStorage
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const cardContainer = document.getElementById('cardContainer');
+
+    if (userData && Array.isArray(userData)) {
+      // Filter out empty or zero values (to avoid displaying empty cards)
+      const validNumbers = userData.filter(num => num !== 0);
+
+      let flippedCard = null; // Keeps track of the flipped card
+
+      // Create and display a card for each valid number
+      validNumbers.forEach((num) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+
+        const front = document.createElement('div');
+        front.classList.add('front');
+        
+
+        const back = document.createElement('div');
+        back.classList.add('back');
+        back.innerText = num; // Display the number on the back
+
+        card.appendChild(front);
+        card.appendChild(back);
+
+        // Add event listener for flipping the card
+        card.addEventListener('click', () => {
+          if (flippedCard === card) {
+            // If the same card is clicked again, flip it back
+            card.classList.remove('flipped');
+            flippedCard = null; // Reset the flipped card tracker
+          } else {
+            if (flippedCard) {
+              flippedCard.classList.remove('flipped'); // Flip the previous card back
+            }
+
+            card.classList.add('flipped'); // Flip the clicked card
+            flippedCard = card; // Set the current card as the flipped card
+          }
+        });
+
+        cardContainer.appendChild(card);
+      });
+
+      // If no valid numbers exist, show a message
+      if (validNumbers.length === 0) {
+        cardContainer.innerHTML = '<p>No data available</p>';
+      }
+    } else {
+      cardContainer.innerHTML = '<p>No data available</p>';
+    }
+  </script>
+</body>
+</html>

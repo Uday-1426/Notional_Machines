@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enter Your Name</title>
+  <link rel="stylesheet" href="tan.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Enter Your Name</h1>
+    <form id="nameForm">
+      <input type="text" id="name" placeholder="Enter your name" required />
+      <button type="submit">Submit</button>
+    </form>
+    
+    <div id="loading" class="loading" style="display: none;">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('nameForm');
+    const nameInput = document.getElementById('name');
+    const loading = document.getElementById('loading');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      if (!name) return;
+
+      // Show loading spinner
+      loading.style.display = 'block';
+
+      // URL to your Google Apps Script
+      const url = `https://script.google.com/macros/s/AKfycbyPfRX_O1FYg6agUOkJb2XCWs5jF-YsN5P3R7vIRXtsy3n_YYWq8Gp-ZN9xzE4MwuNM/exec?name=${encodeURIComponent(name)}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.success) {
+          const numbers = data.data;
+
+          // Redirect to the next page and pass the numbers
+          localStorage.setItem("userData", JSON.stringify(numbers)); // Store numbers in localStorage
+          window.location.href = "cards.html"; // Redirect to the card display page
+        } else {
+          alert('Error fetching data');
+        }
+      } catch (error) {
+        alert('Failed to fetch data');
+      } finally {
+        // Hide loading spinner after fetching data
+        loading.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
